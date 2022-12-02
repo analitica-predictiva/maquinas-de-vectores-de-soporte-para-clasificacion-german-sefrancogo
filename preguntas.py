@@ -81,7 +81,7 @@ Los atributos y sus valores son los siguientes:
      	      A94 : male   : married/widowed
      	      A95 : female : single
 
-     Attribute 10: (qualitative)
+     Attribute 10: (qualitative) 
      	      Other debtors / guarantors
      	      A101 : none
      	      A102 : co-applicant
