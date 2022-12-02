@@ -152,16 +152,16 @@ def pregunta_01():
     En esta función se realiza la carga de datos.
     """
     # Lea el archivo `german.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv("german.csv", sep=',') 
+    df = pd.read_csv("german.csv", sep=",")
 
     # Asigne la columna `default` a la variable `y`.
-    y = df["default"]
+    y = df['default'].copy()
 
     # Asigne una copia del dataframe `df` a la variable `X`.
     X = df.copy()
 
     # Remueva la columna `default` del DataFrame `X`.
-    X = X.drop(["default"], axis=1)
+    X.drop(columns=['default'], inplace=True, axis=1)
 
     # Retorne `X` y `y`
     return X, y
@@ -183,8 +183,8 @@ def pregunta_02():
     (X_train, X_test, y_train, y_test,) = train_test_split(
         X,
         y,
-        test_size = 100,
-        random_state = 123,
+        test_size=100,
+        random_state=123,
     )
 
     # Retorne `X_train`, `X_test`, `y_train` y `y_test`
@@ -200,14 +200,13 @@ def pregunta_03():
     # Importe SVC
     # Importe OneHotEncoder
     # Importe Pipeline
-    from sklearn.compose import ColumnTransformer
-    from sklearn.svm import SVC
-    from sklearn.preprocessing import OneHotEncoder
-    from sklearn.pipeline import Pipeline
     from sklearn.compose import make_column_transformer
+    from sklearn.svm import SVC
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import OneHotEncoder
 
     # Cargue las variables.
-    X_train, X_test, y_train, y_test = pregunta_02()
+    X_train, _, y_train, _ = pregunta_02()
 
     # Cree un objeto ColumnTransformer que aplique OneHotEncoder a las columnas
     # tipo texto. Use make_column_selector para seleccionar las columnas. Las
@@ -215,16 +214,16 @@ def pregunta_03():
     columnTransformer = make_column_transformer(
         (
             OneHotEncoder(),
-            make_column_selector(dtype_include = object),
+            make_column_selector(dtype_include='object'),
         ),
-        remainder = 'passthrough',
+        remainder="passthrough",
     )
 
     # Cree un pipeline que contenga el columnTransformer y el modelo SVC.
     pipeline = Pipeline(
         steps=[
-            ("ColumnTransformer", ColumnTransformer),
-            ("SVC", SVC()),
+            ("columnTransformer", columnTransformer),
+            ("svc", SVC()),
         ],
     )
 
@@ -241,7 +240,7 @@ def pregunta_04():
     """
 
     # Importe confusion_matrix
-    from sklearn.metrics import confusion_matrix 
+    from sklearn.metrics import confusion_matrix
 
     # Obtenga el pipeline de la pregunta 3.
     pipeline = pregunta_03()
@@ -251,14 +250,14 @@ def pregunta_04():
 
     # Evalúe el pipeline con los datos de entrenamiento usando la matriz de confusion.
     cfm_train = confusion_matrix(
-        y_true = y_train,
-        y_pred = pipeline.predict(X_train),
+        y_true=y_train,
+        y_pred=pipeline.predict(X_train),
     )
 
     cfm_test = confusion_matrix(
-        y_true = y_test,
-        y_pred = pipeline.predict(X_test),
+        y_true=y_test,
+        y_pred=pipeline.predict(X_test),
     )
 
     # Retorne la matriz de confusion de entrenamiento y prueba
-    return cfm_train, cfm_test 
+    return cfm_train, cfm_test
